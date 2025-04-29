@@ -1,4 +1,4 @@
-HELP.md
+virtualBookStore/HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -20,6 +20,7 @@ target/
 *.iml
 *.ipr
 target
+
 
 ### NetBeans ###
 /nbproject/private/
