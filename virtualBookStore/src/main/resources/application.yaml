@@ -1,4 +1,3 @@
-#spring.application.name=virtualBookStore
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/BOOKS
@@ -14,5 +13,21 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+  jwt:
+    secret: htjyute65earthqcvytdfaktyjdsrt764hgkjreeeeyhtrghbrjhysdbrt
+    access:
+      jwt:
+        ttl: 10m        # → в коде: spring.jwt.access.jwt.ttl
+    refresh:
+      jwt:
+        ttl: 1d         # → в коде: spring.jwt.refresh.jwt.ttl
+
+cache:                      # убираем spring. перед cache
+  access-token:
+    name: accessTokens
+  refresh-token:
+    name: refreshTokens
+
 server:
   port: 7070
