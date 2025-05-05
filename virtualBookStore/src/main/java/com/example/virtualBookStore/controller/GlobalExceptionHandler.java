@@ -26,6 +26,7 @@ public class GlobalExceptionHandler {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
+
     @ExceptionHandler({
             UserUnauthenticatedException.class,
             InvalidAccessTokenException.class,

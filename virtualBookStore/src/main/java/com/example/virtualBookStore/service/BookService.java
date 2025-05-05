@@ -25,7 +25,7 @@ public class BookService {
     public List<BookDto> getAllBooks(){
         List<Book> books = bookRepository.findAll();
         if(books.isEmpty()){
-            throw new NoSuchBookException("No books found in system!");
+            throw new NoSuchBookException("В системе нет книг!");
         }
         return books.stream()
                 .map(bookMapper::toBookDto)
@@ -34,7 +34,7 @@ public class BookService {
 
     public BookDto createBook(CreateBookRequestDto createBookRequestDto){
         Book book = bookMapper.toBook(createBookRequestDto);
-        book.setRating(0.0);
+        book.setRating(0);
 
         Book savedBook = bookRepository.save(book);
 

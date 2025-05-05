@@ -13,17 +13,16 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
   jwt:
     secret: htjyute65earthqcvytdfaktyjdsrt764hgkjreeeeyhtrghbrjhysdbrt
     access:
       jwt:
-        ttl: 10m        # → в коде: spring.jwt.access.jwt.ttl
+        ttl: 10m
     refresh:
       jwt:
-        ttl: 1d         # → в коде: spring.jwt.refresh.jwt.ttl
+        ttl: 1d
 
-cache:                      # убираем spring. перед cache
+cache:
   access-token:
     name: accessTokens
   refresh-token:
@@ -31,3 +30,8 @@ cache:                      # убираем spring. перед cache
 
 server:
   port: 7070
+
+app:
+  admins:
+    admin1@mail.ru
+    admin2@mail.ru

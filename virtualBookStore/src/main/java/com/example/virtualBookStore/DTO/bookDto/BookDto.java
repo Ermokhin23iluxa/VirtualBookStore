@@ -1,10 +1,12 @@
 package com.example.virtualBookStore.DTO.bookDto;
 
+import java.math.BigDecimal;
+
 public record BookDto (
         Long id,
         String tittle,
         String author,
-        Double price,
+        BigDecimal price,
         String description,
-        Double rating
+        double rating
 ){ }

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "Books")
 @Data
@@ -23,12 +25,12 @@ public class Book {
     @Column(name="author")
     private String author;
     @Column(name="price")
-    private Double price;
+    private BigDecimal price;
     @Column(name="description")
     private String description;
 
     @Column(name="rating")
-    private Double rating;
+    private double rating;
 
 
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)

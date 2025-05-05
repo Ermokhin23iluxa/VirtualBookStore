@@ -1,6 +1,7 @@
 package com.example.virtualBookStore.service;
 
 import com.example.virtualBookStore.DTO.auth.*;
+import com.example.virtualBookStore.enums.Role;
 import com.example.virtualBookStore.exceptions.UserUnauthenticatedException;
 import com.example.virtualBookStore.mapping.UserMapper;
 import com.example.virtualBookStore.model.User;
@@ -39,7 +40,7 @@ public class AuthService {
         User user = userMapper.toUser(registrationRequest);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
+        user.setRole(Role.USER);
         userService.createUser(user);
 
         return new RegisterUserResponseDto(user.getUsername());
