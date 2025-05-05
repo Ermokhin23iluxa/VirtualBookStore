@@ -28,12 +28,18 @@ public class User implements UserDetails {
     @Column(name = "password",nullable = false)
     private String password;
 
-    @Column(name = "role", nullable = false) @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "user")//lazy eager
-    private List<Book> books = new ArrayList<>();
+//    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "user")
+//    private List<Book> books = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "user")
+    private List<Order> orders = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "user")
+    private List<Review> reviews = new ArrayList<>();
 
     //USERDETAILS:
 
