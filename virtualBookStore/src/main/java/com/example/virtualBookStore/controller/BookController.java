@@ -25,12 +25,28 @@ public class BookController {
         List<BookDto> booksDto = bookService.getAllBooks();
         return ResponseEntity.ok(booksDto);
     }
+    @GetMapping("/search")
+    public ResponseEntity<List<BookDto>> getAllBooksForAuthor(
+            @RequestParam("author") String author
+    ){
+        List<BookDto> booksDto = bookService.getAllBooksForAuthor(author);
+        return ResponseEntity.ok(booksDto);
+    }
+    @GetMapping("/by-category")
+    public ResponseEntity<List<BookDto>> getAllBooksForCategory(
+            @RequestParam("category") String category
+    ){
+        List<BookDto> booksDto = bookService.getAllBooksForCategory(category);
+        return ResponseEntity.ok(booksDto);
+    }
+
 
     @PostMapping("/create")
     public ResponseEntity<BookDto> createBook(@RequestBody @Valid CreateBookRequestDto createBookRequestDto) throws BindException {
         BookDto createdBookDto = bookService.createBook(createBookRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdBookDto);
     }
+
     @DeleteMapping("/{Id}/delete")
     public ResponseEntity<Void> deleteBook(@PathVariable Long Id){
         bookService.deleteBook(Id);

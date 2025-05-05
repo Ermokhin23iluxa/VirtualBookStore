@@ -8,5 +8,5 @@ public record BookDto (
         String author,
         BigDecimal price,
         String description,
-        double rating
+        BigDecimal rating
 ){ }
