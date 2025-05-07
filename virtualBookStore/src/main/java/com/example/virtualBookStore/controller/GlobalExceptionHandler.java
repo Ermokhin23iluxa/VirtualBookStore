@@ -13,6 +13,7 @@ import java.nio.file.AccessDeniedException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler({
             UserAlreadyExistException.class,
             UsernameNotFoundException.class,
@@ -23,6 +24,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoSuchBookException.class)
     public ProblemDetail handleBookNotFoundException(RuntimeException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+    @ExceptionHandler(NoSuchOrderException.class)
+    public ProblemDetail handleOrderNotFoundException(RuntimeException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+    @ExceptionHandler(NoSuchPaymentException.class)
+    public ProblemDetail handlePaymentNotFoundException(RuntimeException e) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
     }
 

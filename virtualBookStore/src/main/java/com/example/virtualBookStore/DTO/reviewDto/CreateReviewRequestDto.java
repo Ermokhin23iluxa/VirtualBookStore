@@ -1,18 +1,21 @@
-package com.example.virtualBookStore.DTO;
+package com.example.virtualBookStore.DTO.reviewDto;
 
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 @Data
 public class CreateReviewRequestDto {
-    @NotBlank(message = "id книги не может быть пустым!")
+    @NotNull(message = "id книги не может быть пустым!")
     private Long bookId;
-    @NotBlank(message = "Оценка не может быть пустой!")
+
+    @NotNull(message = "Оценка не может быть пустой!")
     @DecimalMin(value = "1.00",inclusive = true,message = "Оценка от 1.00 до 5.00")
     @DecimalMax(value = "5.00",inclusive = true,message = "Оценка от 1.00 до 5.00")
-    private double score;
-    @NotBlank(message = "Комментарий не может быть пустым!")
+    private BigDecimal score;
+    //@NotBlank(message = "Комментарий не может быть пустым!")
     private String comment;
 }

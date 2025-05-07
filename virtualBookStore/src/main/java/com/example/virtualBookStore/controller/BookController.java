@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,27 +21,26 @@ public class BookController {
 
     @GetMapping
     public ResponseEntity<List<BookDto>> getAllBooks(){
-        List<BookDto> booksDto = bookService.getAllBooks();
-        return ResponseEntity.ok(booksDto);
-    }
-    @GetMapping("/search")
-    public ResponseEntity<List<BookDto>> getAllBooksForAuthor(
-            @RequestParam("author") String author
-    ){
-        List<BookDto> booksDto = bookService.getAllBooksForAuthor(author);
-        return ResponseEntity.ok(booksDto);
-    }
-    @GetMapping("/by-category")
-    public ResponseEntity<List<BookDto>> getAllBooksForCategory(
-            @RequestParam("category") String category
-    ){
-        List<BookDto> booksDto = bookService.getAllBooksForCategory(category);
-        return ResponseEntity.ok(booksDto);
+        return ResponseEntity.ok(bookService.getAllBooks());
     }
 
+    @GetMapping("/author")
+    public ResponseEntity<List<BookDto>> getAllBooksForAuthor(@RequestParam("author") String author){
+        return ResponseEntity.ok(bookService.getAllBooksForAuthor(author));
+    }
+
+    @GetMapping("/category")
+    public ResponseEntity<List<BookDto>> getAllBooksForCategory(@RequestParam("category") String category){
+        return ResponseEntity.ok(bookService.getAllBooksForCategory(category));
+    }
+
+    @GetMapping("/{bookId}")
+    public ResponseEntity<BookDto> getOneBookById(@PathVariable Long bookId){
+        return ResponseEntity.ok(bookService.getOneBook(bookId));
+    }
 
     @PostMapping("/create")
-    public ResponseEntity<BookDto> createBook(@RequestBody @Valid CreateBookRequestDto createBookRequestDto) throws BindException {
+    public ResponseEntity<BookDto> createBook(@RequestBody @Valid CreateBookRequestDto createBookRequestDto) {
         BookDto createdBookDto = bookService.createBook(createBookRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdBookDto);
     }

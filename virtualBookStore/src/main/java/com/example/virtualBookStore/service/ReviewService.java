@@ -1,8 +1,7 @@
 package com.example.virtualBookStore.service;
 
-import com.example.virtualBookStore.DTO.CreateReviewRequestDto;
-import com.example.virtualBookStore.DTO.ReviewResponseDto;
-import com.example.virtualBookStore.DTO.bookDto.BookDto;
+import com.example.virtualBookStore.DTO.reviewDto.CreateReviewRequestDto;
+import com.example.virtualBookStore.DTO.reviewDto.ReviewResponseDto;
 import com.example.virtualBookStore.exceptions.NoSuchBookException;
 import com.example.virtualBookStore.exceptions.NoSuchReviewException;
 import com.example.virtualBookStore.mapping.ReviewMapper;
@@ -10,6 +9,7 @@ import com.example.virtualBookStore.model.Book;
 import com.example.virtualBookStore.model.Review;
 import com.example.virtualBookStore.repository.BookRepository;
 import com.example.virtualBookStore.repository.ReviewRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,11 +25,18 @@ public class ReviewService {
     private final ReviewMapper reviewMapper;
     private final BookRepository bookRepository;
 
-    public ReviewResponseDto addReview(CreateReviewRequestDto reviewRequestDto){
+    public ReviewResponseDto createReview(@Valid CreateReviewRequestDto reviewRequestDto){
+        Book book = bookRepository.findById(reviewRequestDto.getBookId())
+                .orElseThrow(() -> new NoSuchBookException("Книга с id=" + reviewRequestDto.getBookId() + " не найдена"));
+
         Review review = reviewMapper.toReview(reviewRequestDto);
+        review.setBook(book);
         Review savedReview = reviewRepository.save(review);
-        Book book = bookRepository.getBookById(review.getBook().getId());
-        book.setRating(newScore(review));
+
+        BigDecimal newRating = calculateAverageRating(book.getId());
+        book.setRating(newRating);
+        bookRepository.save(book);
+
         return reviewMapper.toReviewResponseDto(savedReview);
     }
 
@@ -42,10 +49,39 @@ public class ReviewService {
                 .map(reviewMapper::toReviewResponseDto)
                 .collect(Collectors.toList());
     }
-    private BigDecimal newScore(Review review){
-        Book oldBook = bookRepository.getBookById(review.getBook().getId());
-        return oldBook.getRating().add(review.getScore())
-                .divide(BigDecimal.valueOf(2),2, RoundingMode.HALF_EVEN);
+
+    private BigDecimal calculateAverageRating(Long bookId){
+        List<Review> reviews = reviewRepository.findByBook_Id(bookId);
+        BigDecimal sum = reviews.stream()
+                .map(Review::getScore)
+                .reduce(BigDecimal.ZERO,BigDecimal::add);
+
+        return sum.divide(BigDecimal.valueOf(reviews.size()),2,RoundingMode.HALF_EVEN);
     }
 
+    public List<ReviewResponseDto> getReviewsForBookTittle(String title) {
+        Book book = bookRepository.findByTittleIgnoreCase(title)
+                .orElseThrow(()->new NoSuchBookException("Книга с названием \"" + title + "\" не найдена"));
+
+        List<Review> reviews = reviewRepository.findByBook_TittleIgnoreCase(title);
+        if (reviews.isEmpty()) {
+            throw new NoSuchReviewException("Нет отзывов для книги \"" + title + "\"");
+        }
+        return reviews.stream()
+                .map(reviewMapper::toReviewResponseDto)
+                .toList();
+    }
+
+    public List<ReviewResponseDto> getReviewsForBookId(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(()->new NoSuchBookException("Книга с id=" + id + " не найдена"));
+
+        List<Review> reviews = reviewRepository.findByBook_Id(id);
+        if (reviews.isEmpty()) {
+            throw new NoSuchReviewException("Нет отзывов для книги id=" + id);
+        }
+        return reviews.stream()
+                .map(reviewMapper::toReviewResponseDto)
+                .toList();
+    }
 }

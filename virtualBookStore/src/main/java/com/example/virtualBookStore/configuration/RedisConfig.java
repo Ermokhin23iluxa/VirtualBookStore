@@ -11,6 +11,8 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 
 import java.time.Duration;
 
+//запуск в docker redis
+// docker run -d --name redis -p 6379:6379 redis:7
 
 @Configuration
 @EnableCaching

@@ -6,13 +6,13 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
-public record CreateBookRequestDto(
+public class CreateBookRequestDto {
         @NotBlank(message = "Название книги не может быть пустым!")
-        String tittle,
+        private String tittle;
         @NotBlank(message = "Автор не может быть пустым!")
-        String author,
+        private String author;
         @NotNull(message = "Цена не может быть 0")
         @DecimalMin(value = "0.01", message = "Цена должна быть не менее 0.01")
-        BigDecimal price,
-        String description
-) { }
+        private BigDecimal price;
+        private String description;
+}
