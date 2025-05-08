@@ -26,8 +26,8 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.getReviewsForBookId(bookId));
     }
     @GetMapping("/by-title")
-    public ResponseEntity<List<ReviewResponseDto>> getReviewByBookTittle(@RequestParam String title){
-        return ResponseEntity.ok(reviewService.getReviewsForBookTittle(title));
+    public ResponseEntity<List<ReviewResponseDto>> getReviewByBookTitle(@RequestParam String title){
+        return ResponseEntity.ok(reviewService.getReviewsForBookTitle(title));
     }
     @PostMapping()
     public ResponseEntity<ReviewResponseDto> createReview(@RequestBody @Valid CreateReviewRequestDto reviewRequestDto){

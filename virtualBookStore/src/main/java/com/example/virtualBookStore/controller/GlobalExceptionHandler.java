@@ -34,6 +34,16 @@ public class GlobalExceptionHandler {
     public ProblemDetail handlePaymentNotFoundException(RuntimeException e) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
     }
+    @ExceptionHandler(NoSuchCategoryException.class)
+    public ProblemDetail handleNoSuchCategoryException(RuntimeException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+    @ExceptionHandler(NoSuchReviewException.class)
+    public ProblemDetail handleNoSuchReviewException(RuntimeException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+
+
 
 
     @ExceptionHandler({

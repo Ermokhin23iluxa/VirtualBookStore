@@ -10,7 +10,7 @@ import org.mapstruct.MappingConstants;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ReviewMapper {
     @Mapping(target = "bookId",source = "book.id")
-    @Mapping(target = "bookTittle",source = "book.tittle")
+    @Mapping(target = "bookTitle",source = "book.title")
     @Mapping(target = "userName",source = "user.name")
     ReviewResponseDto toReviewResponseDto(Review review);
 

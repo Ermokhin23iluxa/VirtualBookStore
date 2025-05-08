@@ -32,7 +32,9 @@ spring:
           max-idle: 4
           min-idle: 1
           max-wait: 2000ms
-
+  cache:
+    cache-names: books, categories
+    type: redis
 cache:
   access-token:
     name: accessTokens

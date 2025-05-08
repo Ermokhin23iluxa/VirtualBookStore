@@ -2,6 +2,7 @@ package com.example.virtualBookStore.filter;
 
 import com.example.virtualBookStore.exceptions.InvalidAccessTokenException;
 import com.example.virtualBookStore.service.Jwt.JwtService;
+import com.example.virtualBookStore.service.UserService;
 import com.example.virtualBookStore.validation.JwtValidator;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -11,6 +12,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -25,7 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // филь�
     public static final String BEARER_PREFIX = "Bearer ";// префикс токена
 
     private final JwtService jwtService;
-
+    private final UserService userService;
     private final JwtValidator jwtValidator;
 
     @Override
@@ -44,11 +46,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // филь�
 
         String token = authHeader.substring(BEARER_PREFIX.length()); // извлекаем чситый токен
         try {
-            String userName = jwtService.extractUserName(token);// извлекаем имя из jwt
-            jwtValidator.accessTokenValid(userName, token);// проверка валидности токкена
+            String email = jwtService.extractUserName(token);// извлекаем имя из jwt
+            jwtValidator.accessTokenValid(email, token);// проверка валидности токкена
+
+            UserDetails userDetails = userService.loadUserByUsername(email);
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    userName, null, Collections.emptyList() // создаем объект аунтификации
+                    userDetails, null, userDetails.getAuthorities() // создаем объект аунтификации
             );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);// кладем объект в SecurityContext

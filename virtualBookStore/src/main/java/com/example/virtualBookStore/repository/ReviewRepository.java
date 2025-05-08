@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<Review,Long> {
     List<Review> findByBook_Id(Long bookId);
-    List<Review> findByBook_TittleIgnoreCase(String tittle);
+    List<Review> findByBook_TitleIgnoreCase(String title);
 }

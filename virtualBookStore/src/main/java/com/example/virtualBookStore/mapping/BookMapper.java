@@ -9,6 +9,6 @@ import org.mapstruct.MappingConstants;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface BookMapper {
-    BookDto toBookDto(Book book);
     Book toBook(CreateBookRequestDto createBookRequestDto);
+    BookDto toBookDto(Book book);
 }

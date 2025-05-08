@@ -27,10 +27,13 @@ public class DataInitController {
         }
         // пример создания
         Category fantasy = catRepo.save(new Category(null, "Fantasy", List.of()));
-        Category sciFi   = catRepo.save(new Category(null, "Sci-Fi", List.of()));
+        Category classical   = catRepo.save(new Category(null, "Classical", List.of()));
+        Category sciFi   = catRepo.save(new Category(null, "SciFiction", List.of()));
 
-        bookRepo.save(new Book(null, "Dune", "Frank Herbert", "...", BigDecimal.valueOf(9.99), 10, BigDecimal.ZERO, List.of(sciFi), List.of()));
-        bookRepo.save(new Book(null, "Hobbit", "J.R.R. Tolkien", "...", BigDecimal.valueOf(7.99), 15, BigDecimal.ZERO, List.of(fantasy), List.of()));
+        bookRepo.save(new Book(null, "BookFirst", "ilya", "...", BigDecimal.valueOf(1.99), 10, BigDecimal.ZERO, List.of(sciFi), List.of()));
+        bookRepo.save(new Book(null, "BookTwo", "Author", "...", BigDecimal.valueOf(9.99), 15, BigDecimal.ZERO, List.of(fantasy), List.of()));
+        bookRepo.save(new Book(null, "BookThree", "Author B.B.", "...", BigDecimal.valueOf(50.00), 5, BigDecimal.ZERO, List.of(classical), List.of()));
+        bookRepo.save(new Book(null, "BookFour", "Author C.", "...", BigDecimal.valueOf(5.00), 100, BigDecimal.ZERO, List.of(fantasy,classical), List.of()));
 
         return ResponseEntity.ok("Demo data loaded");
     }

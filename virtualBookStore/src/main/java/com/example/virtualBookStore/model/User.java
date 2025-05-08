@@ -2,9 +2,7 @@ package com.example.virtualBookStore.model;
 
 import com.example.virtualBookStore.enums.Role;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,9 +15,13 @@ import java.util.List;
 @Table(name = "Users")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Builder
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User implements UserDetails {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "id")
+    @EqualsAndHashCode.Include
     private Long id;
     @Column(name = "name",nullable = false)
     private String name;
@@ -46,6 +48,8 @@ public class User implements UserDetails {
     }
 
     @Override public String getUsername(){return email;}
+    @Override public String getPassword(){return password;}
+
     @Override public boolean isAccountNonExpired() { return true; }
     @Override public boolean isAccountNonLocked() { return true; }
     @Override public boolean isCredentialsNonExpired() { return true; }

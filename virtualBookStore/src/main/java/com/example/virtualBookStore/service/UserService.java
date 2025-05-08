@@ -9,19 +9,17 @@ import com.example.virtualBookStore.model.User;
 import com.example.virtualBookStore.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Validated
-public class UserService {
+public class UserService implements UserDetailsService{
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
@@ -33,7 +31,7 @@ public class UserService {
         }
         return users.stream()
                 .map(userMapper::toUserDto)
-                .collect(Collectors.toList());
+                .toList();
     }
     @Transactional
     public void save(User user) {
@@ -41,10 +39,9 @@ public class UserService {
     }
     @Transactional
     public void createUser(User user) {
-
-        if (userRepository.existsUserByName(user.getUsername())) {
-            throw new UserAlreadyExistException("Пользователь с таким именем уже существует");
-        }
+//        if (userRepository.existsUserByName(user.getEmail())) {
+//            throw new UserAlreadyExistException("Пользователь с таким именем уже существует");
+//        }
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new UserAlreadyExistException("Пользователь с таким email уже существует");
         }
@@ -53,7 +50,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User getUserByUsername(String username) {
-        return userRepository.findUserByName(username)
+        return userRepository.findByEmail(username)
                 .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
     }
 
@@ -64,7 +61,16 @@ public class UserService {
 //    }
 
 
+
     public UserDetailsService userDetailsService() {
         return this::getUserByUsername;
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserDetails loadUserByUsername(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
     }
 }

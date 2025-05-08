@@ -6,7 +6,7 @@ import java.time.Instant;
 public record ReviewResponseDto (
         Long id,
         Long bookId,
-        String bookTittle,
+        String bookTitle,
         String userName,
         BigDecimal score,
         String comment,

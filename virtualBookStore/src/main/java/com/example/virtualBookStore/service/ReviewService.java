@@ -25,7 +25,7 @@ public class ReviewService {
     private final ReviewMapper reviewMapper;
     private final BookRepository bookRepository;
 
-    public ReviewResponseDto createReview(@Valid CreateReviewRequestDto reviewRequestDto){
+    public ReviewResponseDto createReview(CreateReviewRequestDto reviewRequestDto){
         Book book = bookRepository.findById(reviewRequestDto.getBookId())
                 .orElseThrow(() -> new NoSuchBookException("Книга с id=" + reviewRequestDto.getBookId() + " не найдена"));
 
@@ -59,11 +59,11 @@ public class ReviewService {
         return sum.divide(BigDecimal.valueOf(reviews.size()),2,RoundingMode.HALF_EVEN);
     }
 
-    public List<ReviewResponseDto> getReviewsForBookTittle(String title) {
-        Book book = bookRepository.findByTittleIgnoreCase(title)
+    public List<ReviewResponseDto> getReviewsForBookTitle(String title) {
+        Book book = bookRepository.findByTitleIgnoreCase(title)
                 .orElseThrow(()->new NoSuchBookException("Книга с названием \"" + title + "\" не найдена"));
 
-        List<Review> reviews = reviewRepository.findByBook_TittleIgnoreCase(title);
+        List<Review> reviews = reviewRepository.findByBook_TitleIgnoreCase(title);
         if (reviews.isEmpty()) {
             throw new NoSuchReviewException("Нет отзывов для книги \"" + title + "\"");
         }

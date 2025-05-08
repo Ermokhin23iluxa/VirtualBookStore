@@ -3,12 +3,16 @@ package com.example.virtualBookStore.service;
 import com.example.virtualBookStore.DTO.bookDto.BookDto;
 import com.example.virtualBookStore.DTO.bookDto.CreateBookRequestDto;
 import com.example.virtualBookStore.exceptions.NoSuchBookException;
+import com.example.virtualBookStore.exceptions.NoSuchCategoryException;
 import com.example.virtualBookStore.mapping.BookMapper;
 import com.example.virtualBookStore.model.Book;
+import com.example.virtualBookStore.model.Category;
 import com.example.virtualBookStore.repository.BookRepository;
-import jakarta.validation.Valid;
+import com.example.virtualBookStore.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -17,14 +21,18 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+
 public class BookService {
 
     private final BookRepository bookRepository;
 
     private final BookMapper bookMapper;
+    private final CategoryRepository categoryRepository;
 
 
+    @Cacheable(value = "books")
     public List<BookDto> getAllBooks(){
+        log.info("Кэш getAllBooks MISS — загружаем из БД");
         List<Book> books = bookRepository.findAll();
         if(books.isEmpty()){
             throw new NoSuchBookException("В системе пока нет книг!");
@@ -46,9 +54,12 @@ public class BookService {
     }
 
     public List<BookDto> getAllBooksForCategory(String nameCategory){
+        Category category = categoryRepository.findByNameIgnoreCase(nameCategory)
+                .orElseThrow(()->new NoSuchCategoryException("Категория \"" + nameCategory + "\" не найдена"));
+
         List<Book> books = bookRepository.findByCategories_NameIgnoreCase(nameCategory);
         if(books.isEmpty()){
-            throw new NoSuchBookException("Книги в категории \"" + nameCategory + "\" не найдены");
+            throw new NoSuchBookException("В категории \"" + nameCategory + "\" пока нет книг");
         }
         return books.stream()
                 .map(bookMapper::toBookDto)
@@ -61,10 +72,13 @@ public class BookService {
         return bookMapper.toBookDto(b);
     }
 
-    public BookDto createBook(@Valid CreateBookRequestDto createBookRequestDto){
+    @CacheEvict(value = "books", allEntries = true)
+    public BookDto createBook(CreateBookRequestDto createBookRequestDto){
         Book book = bookMapper.toBook(createBookRequestDto);
-        book.setRating(BigDecimal.valueOf(1));
-
+        book.setRating(BigDecimal.ZERO);
+        book.setStock(createBookRequestDto.getStock());
+        List<Category> cats = categoryRepository.findAllById(createBookRequestDto.getCategoryIds());
+        book.setCategories(cats);
         Book savedBook = bookRepository.save(book);
 
         return bookMapper.toBookDto(savedBook);
@@ -77,10 +91,4 @@ public class BookService {
         bookRepository.deleteById(id);
     }
 
-//    private void checkBookExists(Long bookId) {
-//        if(!bookRepository.existsById(bookId)){
-//            throw new NoSuchBookException("Книга в системе не найдена!");
-//        }
-//        log.info("Книга с id: {} существует",bookId);
-//    }
 }
