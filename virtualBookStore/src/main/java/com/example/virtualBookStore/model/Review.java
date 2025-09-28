@@ -20,8 +20,8 @@ public class Review {//отзыв
     private Long id;
 
     @ManyToOne(
-            cascade = {CascadeType.PERSIST,CascadeType.MERGE},
-            fetch = FetchType.EAGER
+    //cascade = {CascadeType.PERSIST,CascadeType.MERGE},
+            fetch = FetchType.LAZY
     )
     @JoinColumn(name = "user_id",nullable = false)
     private User user;

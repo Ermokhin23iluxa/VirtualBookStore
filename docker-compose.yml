@@ -1,12 +1,27 @@
 version: '3.8'
 services:
   redis:
-    image: redis:7
+    image: redis:7-alpine
     container_name: bookstore_redis
     ports:
       - "6379:6379"
     restart: unless-stopped
+    networks:
+      - books-network
 
-
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres-books
+    environment:
+      POSTGRES_DB: BOOKS
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 19788707
+    ports:
+      - "5432:5432"
+    networks:
+      - books-network
+networks:
+  books-network:
+    driver: bridge
     #docker-compose up -d redis
     #docker-compose down

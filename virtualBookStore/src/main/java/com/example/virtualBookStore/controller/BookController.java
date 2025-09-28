@@ -20,9 +20,12 @@ public class BookController {
     private final BookService bookService;
 
     @GetMapping
-    public ResponseEntity<List<BookDto>> getAllBooks(){
-        return ResponseEntity.ok(bookService.getAllBooks());
+    public ResponseEntity<List<BookDto>> getAllBooks(
+            @RequestParam(name = "limit",required = false) Integer limit,
+            @RequestParam(name = "offset",required = false) Integer offset){
+        return ResponseEntity.ok(bookService.getAllBooks(limit,offset));
     }
+
 
     @GetMapping("/author")
     public ResponseEntity<List<BookDto>> getAllBooksForAuthor(@RequestParam("author") String author){

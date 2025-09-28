@@ -1,0 +1,10 @@
+type Query{
+    getOneBookById(id: ID!): Book!
+    getAllBooks(limit: Int, offset: Int): [Book!]!
+    getAllBooksForAuthor(author: String!, limit: Int, offset: Int): [Book!]!
+    getAllBooksForCategory(category: String!, limit: Int, offset: Int): [Book!]!
+}
+type Mutation {
+    createBook(input: CreateBookInput!): Book!
+    deleteBook(id: ID!): Boolean!
+}

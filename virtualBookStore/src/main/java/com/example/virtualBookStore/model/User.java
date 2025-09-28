@@ -40,7 +40,7 @@ public class User implements UserDetails {
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "user")
     private List<Review> reviews = new ArrayList<>();
 
-    //USERDETAILS:
+    //USER DETAILS:
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

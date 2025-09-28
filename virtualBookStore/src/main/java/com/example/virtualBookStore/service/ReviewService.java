@@ -4,13 +4,18 @@ import com.example.virtualBookStore.DTO.reviewDto.CreateReviewRequestDto;
 import com.example.virtualBookStore.DTO.reviewDto.ReviewResponseDto;
 import com.example.virtualBookStore.exceptions.NoSuchBookException;
 import com.example.virtualBookStore.exceptions.NoSuchReviewException;
+import com.example.virtualBookStore.exceptions.UserUnauthenticatedException;
 import com.example.virtualBookStore.mapping.ReviewMapper;
 import com.example.virtualBookStore.model.Book;
 import com.example.virtualBookStore.model.Review;
+import com.example.virtualBookStore.model.User;
 import com.example.virtualBookStore.repository.BookRepository;
 import com.example.virtualBookStore.repository.ReviewRepository;
-import jakarta.validation.Valid;
+import com.example.virtualBookStore.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -24,13 +29,36 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
     private final BookRepository bookRepository;
+    private final UserRepository userRepository;
 
     public ReviewResponseDto createReview(CreateReviewRequestDto reviewRequestDto){
         Book book = bookRepository.findById(reviewRequestDto.getBookId())
                 .orElseThrow(() -> new NoSuchBookException("Книга с id=" + reviewRequestDto.getBookId() + " не найдена"));
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new UserUnauthenticatedException("Пользователь не аутентифицирован");
+        }
+
+        Object principal = authentication.getPrincipal();
+        User currentUser;
+
+        if (principal instanceof User user) {
+            // если твой User имплементит UserDetails и возвращается напрямую
+            currentUser = user;
+        } else if (principal instanceof UserDetails userDetails) {
+            // если у тебя отдельная обёртка, вытаскиваем email/username и грузим User из БД
+            String email = userDetails.getUsername();
+            currentUser = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new UserUnauthenticatedException("Пользователь не найден"));
+        } else {
+            throw new UserUnauthenticatedException("Не удалось определить пользователя из контекста");
+        }
+
         Review review = reviewMapper.toReview(reviewRequestDto);
         review.setBook(book);
+        review.setUser(currentUser);
+
         Review savedReview = reviewRepository.save(review);
 
         BigDecimal newRating = calculateAverageRating(book.getId());

@@ -1,0 +1,33 @@
+scalar BigDecimal
+scalar DateTime
+
+type Category {
+    id: ID!
+    name: String!
+    books(limit: Int, offset: Int): [Book!]!
+}
+type CategoryResponseDto {
+    id: ID!
+    name: String!
+}
+input CreateCategoryRequestDto {
+    id: ID!
+    name: String!
+}
+input CreateBookInput {
+    title: String!
+    author: String!
+    description: String
+    price: BigDecimal!
+    stock: Int!
+    categoryIds: [ID!]!
+}
+type Book {
+    id: ID!
+    title: String!
+    author: String
+    price: BigDecimal
+    description: String
+    rating: BigDecimal
+    categories: [Category!]!
+}

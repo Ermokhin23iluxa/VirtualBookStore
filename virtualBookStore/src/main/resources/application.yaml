@@ -1,4 +1,8 @@
 spring:
+  graphql:
+    graphiql:
+      enabled: true
+      path: /graphiql
   datasource:
     url: jdbc:postgresql://localhost:5432/BOOKS
     username: postgres
@@ -6,7 +10,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
@@ -17,7 +21,7 @@ spring:
     secret: htjyute65earthqcvytdfaktyjdsrt764hgkjreeeeyhtrghbrjhysdbrt
     access:
       jwt:
-        ttl: 10m
+        ttl: 25m
     refresh:
       jwt:
         ttl: 1d
@@ -48,3 +52,7 @@ app:
   admins:
     admin1@mail.ru
     admin2@mail.ru
+logging:
+  level:
+    org.springframework.graphql: DEBUG
+    org.springframework.graphql.execution: DEBUG

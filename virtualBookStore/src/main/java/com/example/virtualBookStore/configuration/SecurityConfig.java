@@ -40,6 +40,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/non-auth").permitAll()
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/graphiql/**").permitAll()
+                        .requestMatchers("/graphiql").permitAll()
+                        .requestMatchers("/graphql").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/favicon.ico").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
